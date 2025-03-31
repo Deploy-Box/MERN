@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      STACK: ${{ env.STACK }}
+      STACK: ${{ vars.STACK }}
 
     steps:
       - name: Check out code
