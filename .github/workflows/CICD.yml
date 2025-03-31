@@ -30,12 +30,12 @@ jobs:
 
       - name: Build and Push Backend Docker image to GCP
         run: |
-          IMAGE_NAME=us-central1-docker.pkg.dev/deploy-box/available-stacks/${{ env.STACK }}-backend
+          IMAGE_NAME=gcr.io/deploy-box/available-stacks/${{ env.STACK }}-backend
           docker build -t $IMAGE_NAME source_code/backend
           docker push $IMAGE_NAME
 
       - name: Build and Push Frontend Docker image to GCP
         run: |
-          IMAGE_NAME=us-central1-docker.pkg.dev/deploy-box/available-stacks/${{ env.STACK }}-frontend
+          IMAGE_NAME=gcr.io/deploy-box/available-stacks/${{ env.STACK }}-frontend
           docker build -t $IMAGE_NAME source_code/frontend
           docker push $IMAGE_NAME
