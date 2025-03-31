@@ -27,12 +27,12 @@ jobs:
 
       - name: Build and Push Backend Docker image to GCP
         run: |
-          IMAGE_NAME=gcr.io/deploy-box/MERN-backend
+          IMAGE_NAME=gcr.io/deploy-box/mern-backend
           docker build -t $IMAGE_NAME source_code/backend
           docker push $IMAGE_NAME
 
       - name: Build and Push Frontend Docker image to GCP
         run: |
-          IMAGE_NAME=gcr.io/deploy-box/MERN-frontend
+          IMAGE_NAME=gcr.io/deploy-box/mern-frontend
           docker build -t $IMAGE_NAME source_code/frontend
           docker push $IMAGE_NAME
