@@ -63,9 +63,9 @@ jobs:
       - name: Upload source_code.zip to Azure Blob Storage
         run: |
           az storage blob upload \
-            --account-name deployboxsharedsadev \
-            --container-name stack-source-code-container \
+            --account-name ${{ vars.AZURE_STORAGE_ACCOUNT }} \
+            --container-name ${{ vars.AZURE_STORAGE_CONTAINER }} \
             --name ${{ env.STACK }}.zip \
             --file source_code.zip \
-             --sas-token "${{ secrets.AZURE_BLOB_SAS }}" \
+            --sas-token "${{ secrets.AZURE_BLOB_SAS }}" \
             --overwrite
