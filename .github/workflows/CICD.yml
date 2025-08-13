@@ -16,10 +16,6 @@ jobs:
     runs-on: ubuntu-latest
     environment: ${{ github.ref == 'refs/heads/main' && 'prod' || 'dev' }}
 
-    env:
-      STACK: ${{ vars.STACK }}
-      ACR_NAME: ${{ vars.ACR_NAME }}
-
     steps:
       - name: Check out code
         uses: actions/checkout@v4
@@ -30,25 +26,25 @@ jobs:
       - name: Log in to Azure
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
           subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
-      # - name: Log in to Azure Container Registry
-      #   run: |
-      #     az acr login --name ${{ env.ACR_NAME }}
+      - name: Log in to Azure Container Registry
+        run: |
+          az acr login --name ${{ vars.ACR_NAME }}
 
-      # - name: Build and Push Backend Docker image to Azure
-      #   run: |
-      #     IMAGE_NAME=${{ env.ACR_NAME }}.azurecr.io/${{ env.STACK }}-backend
-      #     docker build -t $IMAGE_NAME source_code/backend
-      #     docker push $IMAGE_NAME
+      - name: Build and Push Backend Docker image to Azure
+        run: |
+          IMAGE_NAME=${{ vars.ACR_NAME }}.azurecr.io/${{ vars.STACK }}-backend
+          docker build -t $IMAGE_NAME source_code/backend
+          docker push $IMAGE_NAME
 
-      # - name: Build and Push Frontend Docker image to Azure
-      #   run: |
-      #     IMAGE_NAME=${{ env.ACR_NAME }}.azurecr.io/${{ env.STACK }}-frontend
-      #     docker build -t $IMAGE_NAME source_code/frontend
-      #     docker push $IMAGE_NAME
+      - name: Build and Push Frontend Docker image to Azure
+        run: |
+          IMAGE_NAME=${{ vars.ACR_NAME }}.azurecr.io/${{ vars.STACK }}-frontend
+          docker build -t $IMAGE_NAME source_code/frontend
+          docker push $IMAGE_NAME
 
       - name: Zip source_code directory
         run: |
