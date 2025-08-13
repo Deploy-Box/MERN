@@ -65,6 +65,7 @@ jobs:
           az storage blob upload \
             --account-name deployboxsharedsadev \
             --container-name stack-source-code-container \
-            --name source_code.zip \
+            --name ${{ env.STACK }}.zip \
             --file source_code.zip \
-            --sas-token ${{ secrets.AZURE_BLOB_SAS }}
+             --sas-token "${{ secrets.AZURE_BLOB_SAS }}" \
+            --overwrite
