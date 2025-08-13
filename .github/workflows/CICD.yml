@@ -22,6 +22,7 @@ jobs:
       AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
       AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
       AZURE_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      AZURE_BLOB_SAS: ${{ secrets.AZURE_BLOB_SAS }}
 
     steps:
       - name: Check out code
@@ -37,18 +38,33 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Log in to Azure Container Registry
-        run: |
-          az acr login --name ${{ env.ACR_NAME }}
+      # - name: Log in to Azure Container Registry
+      #   run: |
+      #     az acr login --name ${{ env.ACR_NAME }}
 
-      - name: Build and Push Backend Docker image to Azure
-        run: |
-          IMAGE_NAME=${{ env.ACR_NAME }}.azurecr.io/${{ env.STACK }}-backend
-          docker build -t $IMAGE_NAME source_code/backend
-          docker push $IMAGE_NAME
+      # - name: Build and Push Backend Docker image to Azure
+      #   run: |
+      #     IMAGE_NAME=${{ env.ACR_NAME }}.azurecr.io/${{ env.STACK }}-backend
+      #     docker build -t $IMAGE_NAME source_code/backend
+      #     docker push $IMAGE_NAME
 
-      - name: Build and Push Frontend Docker image to Azure
+      # - name: Build and Push Frontend Docker image to Azure
+      #   run: |
+      #     IMAGE_NAME=${{ env.ACR_NAME }}.azurecr.io/${{ env.STACK }}-frontend
+      #     docker build -t $IMAGE_NAME source_code/frontend
+      #     docker push $IMAGE_NAME
+
+      - name: Zip source_code directory
         run: |
-          IMAGE_NAME=${{ env.ACR_NAME }}.azurecr.io/${{ env.STACK }}-frontend
-          docker build -t $IMAGE_NAME source_code/frontend
-          docker push $IMAGE_NAME
+          cd source_code
+          zip -r ../source_code.zip .
+          cd ..
+
+      - name: Upload source_code.zip to Azure Blob Storage
+        run: |
+          az storage blob upload \
+            --account-name deployboxsharedsadev \
+            --container-name stack-source-code-container \
+            --name source_code.zip \
+            --file source_code.zip \
+            --sas-token ${{ secrets.AZURE_BLOB_SAS }}
